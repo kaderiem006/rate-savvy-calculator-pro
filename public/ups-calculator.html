@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPS Rate Calculator</title>
+    <link rel="stylesheet" href="ups-calculator.css">
+</head>
+<body>
+    <div class="calculator-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <!-- Header -->
+            <div class="sidebar-header">
+                <h2>Rate Browser</h2>
+                <span class="close-icon">×</span>
+            </div>
+
+            <!-- Configuration -->
+            <div class="configuration">
+                <h3>Configure Rates</h3>
+                
+                <!-- Ship From -->
+                <div class="form-group">
+                    <label class="form-label">Ship From</label>
+                    <div class="required-info">Required Info ▼</div>
+                    <input type="text" class="form-input" id="shipFromZip" value="34285">
+                </div>
+
+                <!-- Ship To -->
+                <div class="form-group">
+                    <label class="form-label">Ship To</label>
+                    <div class="form-subgroup">
+                        <label class="form-sublabel">Country</label>
+                        <select class="form-select" id="shipToCountry">
+                            <option value="United States">United States</option>
+                            <option value="Canada">Canada</option>
+                        </select>
+                    </div>
+                    <div class="form-subgroup">
+                        <label class="form-sublabel">Postal Code</label>
+                        <input type="text" class="form-input" id="shipToZip" value="12345">
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="residential" class="form-checkbox">
+                        <label for="residential" class="checkbox-label">Residential Address</label>
+                    </div>
+                </div>
+
+                <!-- Shipment Information -->
+                <div class="form-group">
+                    <label class="form-label">Shipment Information</label>
+                    <div class="form-subgroup">
+                        <label class="form-sublabel">Weight</label>
+                        <div class="weight-input">
+                            <input type="text" class="form-input flex-1" id="weight" value="1">
+                            <span class="weight-unit">lbs</span>
+                            <div class="oz-button">oz</div>
+                        </div>
+                    </div>
+                    <div class="form-subgroup">
+                        <label class="form-sublabel">Package</label>
+                        <select class="form-select" id="package">
+                            <option value="Box brown 16x13x3">Box brown 16x13x3</option>
+                        </select>
+                    </div>
+                    <div class="dimensions-grid">
+                        <div class="dimension-input">
+                            <input type="text" class="form-input text-center" id="length" value="10">
+                            <div class="dimension-label">L</div>
+                        </div>
+                        <div class="dimension-input">
+                            <input type="text" class="form-input text-center" id="width" value="6">
+                            <div class="dimension-label">W</div>
+                        </div>
+                        <div class="dimension-input">
+                            <input type="text" class="form-input text-center" id="height" value="3">
+                            <div class="dimension-label">H (in)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confirmation -->
+                <div class="form-group">
+                    <label class="form-label">Confirmation</label>
+                    <select class="form-select" id="confirmation">
+                        <option value="No Confirmation">No Confirmation</option>
+                    </select>
+                </div>
+
+                <!-- Service Class -->
+                <div class="form-group">
+                    <label class="form-label">Service Class</label>
+                    <select class="form-select" id="serviceClass">
+                        <option value="Show All">Show All</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Browse Rates Button -->
+            <div class="button-container">
+                <button class="browse-button" id="browseRatesBtn">Browse Rates</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="main-header">
+                <div class="header-left">
+                    <h1 id="ratesTitle">Rates</h1>
+                </div>
+                <div class="header-right">
+                    <div class="view-by">
+                        <label class="view-label">View By</label>
+                        <select class="form-select small" id="viewBy">
+                            <option value="Carriers">Carriers</option>
+                            <option value="Price">Price</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rates Content -->
+            <div class="rates-content">
+                <div class="no-rates" id="noRates">
+                    <div class="no-rates-title">No rates calculated yet</div>
+                    <div class="no-rates-subtitle">Enter shipment details and click "Browse Rates" to see available options</div>
+                </div>
+                <div class="rates-list" id="ratesList" style="display: none;"></div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="bottom-bar">
+                <div class="cost-info">
+                    COST/SERV: $396.69 | 0 | Packs... <span class="shipped-amount">$0.00 Shipped</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="ups-calculator.js"></script>
+</body>
+</html>

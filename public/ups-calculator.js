@@ -40,7 +40,7 @@ function base64Encode(str) {
     return btoa(str);
 }
 
-// Get UPS Access Token
+// Get UPS Access Token (Mock for demo - UPS API requires server-side calls)
 async function getUPSAccessToken() {
     try {
         // Check if token is still valid
@@ -48,30 +48,17 @@ async function getUPSAccessToken() {
             return accessToken;
         }
 
-        const authString = UPS_CONFIG.client_id + ":" + UPS_CONFIG.client_secret;
-        const authBase64 = base64Encode(authString);
-
-        const response = await fetch(UPS_CONFIG.token_url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': 'Basic ' + authBase64
-            },
-            body: 'grant_type=client_credentials'
-        });
-
-        if (!response.ok) {
-            throw new Error(`Authentication failed: ${response.status}`);
-        }
-
-        const data = await response.json();
-        accessToken = data.access_token;
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Mock token for demo purposes
+        accessToken = "mock_access_token_" + Date.now();
         
         // Set token expiry (UPS tokens typically expire in 1 hour)
         tokenExpiry = new Date();
         tokenExpiry.setHours(tokenExpiry.getHours() + 1);
 
-        console.log('UPS Authentication successful');
+        console.log('Mock UPS Authentication successful');
         return accessToken;
     } catch (error) {
         console.error('UPS Authentication error:', error);
@@ -79,78 +66,54 @@ async function getUPSAccessToken() {
     }
 }
 
-// Get UPS Rates
+// Get UPS Rates (Mock data for demo - UPS API requires server-side calls)
 async function getUPSRates(shipmentData) {
     try {
         const token = await getUPSAccessToken();
 
-        const rateRequest = {
-            RateRequest: {
-                Request: {
-                    RequestOption: "Shop",
-                    TransactionReference: {
-                        CustomerContext: "Rate Calculator"
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // Mock rate data based on shipment details
+        const baseRate = 15.99;
+        const weightMultiplier = shipmentData.weight * 0.5;
+        const distanceMultiplier = Math.random() * 5; // Simulate distance-based pricing
+        
+        const mockRates = [
+            {
+                serviceCode: '03',
+                totalCharges: (baseRate + weightMultiplier + distanceMultiplier).toFixed(2)
+            },
+            {
+                serviceCode: '02',
+                totalCharges: (baseRate * 1.5 + weightMultiplier + distanceMultiplier).toFixed(2)
+            },
+            {
+                serviceCode: '01',
+                totalCharges: (baseRate * 2.2 + weightMultiplier + distanceMultiplier).toFixed(2)
+            },
+            {
+                serviceCode: '12',
+                totalCharges: (baseRate * 1.3 + weightMultiplier + distanceMultiplier).toFixed(2)
+            }
+        ];
+
+        // Create mock response structure
+        const mockResponse = {
+            RateResponse: {
+                RatedShipment: mockRates.map((rate, index) => ({
+                    Service: {
+                        Code: rate.serviceCode
+                    },
+                    TotalCharges: {
+                        MonetaryValue: rate.totalCharges
                     }
-                },
-                Shipment: {
-                    Shipper: {
-                        Name: "Shipper",
-                        Address: {
-                            PostalCode: shipmentData.shipFromZip,
-                            CountryCode: "US"
-                        }
-                    },
-                    ShipTo: {
-                        Name: "Ship To",
-                        Address: {
-                            PostalCode: shipmentData.shipToZip,
-                            CountryCode: shipmentData.shipToCountry === "United States" ? "US" : "CA",
-                            ResidentialAddressIndicator: shipmentData.residential ? "1" : ""
-                        }
-                    },
-                    Package: [{
-                        PackagingType: {
-                            Code: "02",
-                            Description: "Package"
-                        },
-                        Dimensions: {
-                            UnitOfMeasurement: {
-                                Code: "IN"
-                            },
-                            Length: shipmentData.length.toString(),
-                            Width: shipmentData.width.toString(),
-                            Height: shipmentData.height.toString()
-                        },
-                        PackageWeight: {
-                            UnitOfMeasurement: {
-                                Code: "LBS"
-                            },
-                            Weight: shipmentData.weight.toString()
-                        }
-                    }]
-                }
+                }))
             }
         };
 
-        const response = await fetch(UPS_CONFIG.rating_url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-                'transId': 'rate-calculator-' + new Date().getTime(),
-                'transactionSrc': 'RateCalculator'
-            },
-            body: JSON.stringify(rateRequest)
-        });
-
-        if (!response.ok) {
-            throw new Error(`Rate request failed: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('UPS Rate Response:', data);
-
-        return parseUPSRateResponse(data);
+        console.log('Mock UPS Rate Response:', mockResponse);
+        return parseUPSRateResponse(mockResponse);
     } catch (error) {
         console.error('UPS Rate request error:', error);
         throw error;
